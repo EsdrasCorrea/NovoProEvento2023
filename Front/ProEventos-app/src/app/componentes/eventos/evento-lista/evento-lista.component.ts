@@ -16,7 +16,8 @@ export class EventoListaComponent implements OnInit {
   modalRef?: BsModalRef;
 
   public eventos: Evento[] = [];
-  public eventosFiltrados: Evento[] = []
+  public eventosFiltrados: Evento[] = [];
+  public eventoId = 0;
 
   public widthImg: number = 120;
   public marginImg: number = 2;
@@ -49,14 +50,14 @@ export class EventoListaComponent implements OnInit {
 
   public ngOnInit(): void {
     this.spinner.show();
-    this.getEventos();
+    this.carregarEventos();
   }
 
   public alterarImagem(): void {
     this.exibirImagem = !this.exibirImagem
   }
 
-  public getEventos(): void {
+  public carregarEventos(): void {
     this.eventoService.getEventos().subscribe({
       next: (eventos: Evento[]) => {
         this.eventos = eventos,
@@ -64,20 +65,38 @@ export class EventoListaComponent implements OnInit {
       },
       error: (error: any) => {
         this.spinner.hide(),
-        this.toastr.error('Erro ao carregar os eventos', 'Erro')
+        this.toastr.error('Erro ao carregar os eventos', 'Erro!')
 
       },
-      complete: () =>this.spinner.hide()
+      complete: () => this.spinner.hide()
     });
   }
 
-  openModal(template: TemplateRef<any>): void {
+  openModal(event: any, template: TemplateRef<any>, eventoId : number): void {
+    event.stopPropagation();
+    this.eventoId = eventoId;
     this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
   }
 
   confirm(): void {
     this.modalRef?.hide();
-    this.toastr.success('Evento excluido com sucesso', 'Deletado');
+    this.spinner.show();
+
+    this.eventoService.deleteEvento(this.eventoId).subscribe({
+      next: (result : any) => {
+        if(result.message === 'Deletado'){
+          this.toastr.success('Evento excluido com sucesso', 'Deletado');
+          this.spinner.hide();
+          this.carregarEventos();
+        }
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.toastr.error(`Erro ao tentar excluir o evento ${this.eventoId}`, 'Erro');
+        this.spinner.hide();
+      },
+      complete: () => this.spinner.hide()
+    });
   }
 
   decline(): void {

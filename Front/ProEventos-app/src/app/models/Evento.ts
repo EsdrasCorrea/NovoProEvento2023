@@ -1,3 +1,4 @@
+import { DateTimeFormatPipe } from '@app/helpers/DateTimeFormat.pipe';
 import { Lote } from './Lote';
 import { Palestrante } from './Palestrante';
 import { RedeSocial } from './RedeSocial';
@@ -5,7 +6,7 @@ import { RedeSocial } from './RedeSocial';
 export interface Evento {
   id : number;
   local : string;
-  dataEvento? : Date;
+  dataEvento? : Date
   tema : string;
   qtdPessoas : number;
   imageURL : string;
