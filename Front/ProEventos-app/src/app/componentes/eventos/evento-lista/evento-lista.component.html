@@ -55,7 +55,7 @@
         <td class="d-none d-md-table-cell">{{evento.qtdPessoas}}</td>
         <td class="d-none d-md-table-cell">{{evento.lotes[0]?.nome | uppercase}}</td>
         <td>
-          <button type="button" class="btn btn-danger btn-lg" tooltip="Excluir" (click)="openModal($event, template, evento.id)">
+          <button type="button" class="btn btn-danger" tooltip="Excluir" (click)="openModal($event, template, evento.id)">
             <i class="fa fa-trash mr-1"></i>
           </button>
         </td>
