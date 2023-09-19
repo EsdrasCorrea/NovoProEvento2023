@@ -26,8 +26,8 @@ namespace ProEventos.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("DataEvento")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("DataEvento")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -59,11 +59,11 @@ namespace ProEventos.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("DataFim")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("DataFim")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DataInicio")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("DataInicio")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EventoId")
                         .HasColumnType("int");

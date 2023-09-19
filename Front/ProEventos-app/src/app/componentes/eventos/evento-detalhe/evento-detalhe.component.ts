@@ -12,6 +12,7 @@ import { Evento } from '@app/models/Evento';
 import { EventoService } from '@app/services/evento.service';
 import { Lote } from '@app/models/Lote';
 import { LoteService } from '@app/services/lote.service';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-evento-detalhe',
@@ -28,6 +29,8 @@ export class EventoDetalheComponent implements OnInit {
   form!: FormGroup;
   estadoSalvar = 'post';
   loteAtual = { id: 0, nome: '', indice: 0 };
+  imagemURL = 'assets/cloud.png';
+  file : File;
 
   get modoEditar() : boolean {
     return this.estadoSalvar === 'put';
@@ -63,6 +66,9 @@ export class EventoDetalheComponent implements OnInit {
         next: (evento : Evento) => {
           this.evento = {...evento};
           this.form.patchValue(this.evento);
+          if(this.evento.imageURL !==  '') {
+            this.imagemURL = environment.apiURL + 'recursos/Images/' + this.evento.imageURL;
+          } 
           this.evento.lotes.forEach(lote => {
             this.lotes.push(this.criarLote(lote));
           });
@@ -102,7 +108,7 @@ export class EventoDetalheComponent implements OnInit {
       qtdPessoas: ['', [Validators.required, Validators.max(200)]],
       telefone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      imageURL: ['', Validators.required],
+      imageURL: [''],
       lotes: this.fb.array([])
     });
   }
@@ -208,5 +214,29 @@ export class EventoDetalheComponent implements OnInit {
 
   declineDeleteLote(): void {
     this.modalRef.hide();
+  }
+
+  onFileChange(ev : any): void {
+    const reader = new FileReader();
+
+    reader.onload = (event: any) => this.imagemURL = event.target.result
+
+    this.file = ev.target.files;
+    reader.readAsDataURL(this.file[0]);
+    this.uploadImagem();
+  }
+
+  uploadImagem(): void {
+    this.spinner.show();
+    this.eventoService.postUpload(this.eventoId, this.file).subscribe(
+      () => {
+        this.carregarEvento();
+        this.toastr.success('Imagem atualizada com sucesso', 'Sucesso!')
+      },
+      (error: any ) => {
+        this.toastr.error('Erro ao tentar atualizar a imagem', 'Erro!')
+        console.log(error)
+      }
+    ).add(() => this.spinner.hide());
   }
 }

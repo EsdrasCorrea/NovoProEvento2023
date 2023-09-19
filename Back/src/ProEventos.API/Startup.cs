@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +11,10 @@ using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.Contratos;
 using AutoMapper;
 using System;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProEventos.API
 {
@@ -68,6 +71,11 @@ namespace ProEventos.API
             app.UseCors(cors => cors.AllowAnyHeader()
                                     .AllowAnyMethod()
                                     .AllowAnyOrigin());
+
+            app.UseStaticFiles(new StaticFileOptions() {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Recursos")),
+                RequestPath = new PathString("/Recursos")
+            });
 
             app.UseEndpoints(endpoints =>
             {
